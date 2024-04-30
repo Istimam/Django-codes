@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>This is app home page</h1>
+    <h2>Author: {{author}}</h2>
+    <h2>Age: {{age}}</h2>
+    <h2>{{lst}}</h2>
+    <!-- Conditional Statement -->
+    {% if age >= 20 %}
+        <h3>You will get driving license</h3>
+
+    {% elif age >= 10 and age <= 19 %}
+        <h3>you will not get driving license</h3>
+    {%  else %}
+        <h4>you're a child</h4>
+    {% endif %}
+
+    <!-- For Loop -->
+    {% for item in courses %}
+        <h4>{{item.id}} {{item.name}} {{item.fees}}</h4>
+    {% endfor %}
+
+    <!-- Join Filter -->
+    {{ lst | join:"  " }}
+    <br>
+    <!-- Date Time Filter -->
+    <h1>{{ birthday | date:"D d M Y" }}</h1>
+    <!-- Default val  -->
+
+    <!-- Cut Filter -->
+    {{ author | cut:" " }}
+</body>
+</html>
