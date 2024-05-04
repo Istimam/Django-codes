@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    <style>
+        .background-image {
+            background-image: url('{% static "images/banner.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color:chocolate;
+            text-align: center;
+        }
+
+        .slogan {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="background-image">
+        <div>
+            <h1>Welcome to RiverView Resturen</h1>
+            <p class="slogan fs-2">Delicious Food, Delightful Experience</p>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,1 @@
+default_app_config = 'Resturent_app.apps.ResturentAppConfig'

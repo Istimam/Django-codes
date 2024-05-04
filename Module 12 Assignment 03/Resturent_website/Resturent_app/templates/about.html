@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+    <style>
+        .background{
+            background-color: black;
+            height: 100vh;
+        }
+        .image {
+            height: 400px;
+            width: 300px;
+            margin-right: 20px;
+        }
+
+        .text {
+            height: auto;
+            width: 400px;
+            text-align: justify;
+            color: wheat;
+            font-size: 20px;
+            padding-right: 5px;
+        }
+        .text_image{
+            align-items: center;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+<div class="background">
+    <div class="text-white text-center mt-6">
+        <h1 class="fw-bold fs-1">ABOUT</h1>
+    </div>
+    <div class="text_image container d-flex">
+        <div class="text">
+                <p>Welcome to RiverView Restaurant, your go-to destination for delicious food and great dining experiences.</p>
+                <p>Our restaurant has been serving the community for over a decade, offering a wide range of culinary delights crafted with passion and care.</p>
+                <p>At RiverView Restaurant, we pride ourselves on using fresh, locally-sourced ingredients to create mouthwatering dishes that satisfy every palate.</p>
+                <p>Whether you're looking for a cozy dinner for two or a lively gathering with friends and family, we have something for everyone.</p>
+                <p>Come dine with us and experience the magic of RiverView Restaurant!</p>
+        </div>
+        <div class="image">
+            <img src="{% static 'images/Organic-cuisine.jpg' %}" alt="About Image">
+        </div>
+    </div>
+</div>
+{% endblock %}

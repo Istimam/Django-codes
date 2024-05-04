@@ -1,0 +1,21 @@
+{% extends "base.html"%}
+{% block content %}
+<div class="container">
+    <div class="text-bg-secondary p-2 rounded-1 mx-auto m-4">
+        <h1>Menu Items</h1>
+    </div>
+    <div class="row g-4">
+    {% for categories in categories %}
+        <div class="col-md-4">
+            <div class="card">
+                <img src="{{categories.strCategoryThumb}}" class="card-img-top" alt="cardImage">
+                <div class="card-body">
+                    <h5 class="card_title_id">#{{ categories.idCategory }} : {{ categories.strCategory }}</h5>
+                <p class="card-text">{{ categories.strCategoryDescription|truncatewords:10 }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
