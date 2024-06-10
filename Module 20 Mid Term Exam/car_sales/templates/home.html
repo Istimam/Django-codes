@@ -30,12 +30,17 @@
     {% for car in data %}
     <div class="col-sm-3 m-2">
         <div class="card">
-            <img src="{{ car.image.url }}" class="card-img-top" alt="...">
+            {% if car.image %}
+                <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.name }}">
+            {% else %}
+                <img src="{% static 'byd-dolphin.jpg' %}" class="card-img-top" alt="Default image">
+            {% endif %}
             <div class="card-body">
-              <h5 class="card-title"><a href="{% url 'car_details' car.id %}" class="text-decoration-none text">{{car.name}}</a></h5>
-              <p class="card-text">{{car.description|truncatechars:30}}</p>
+                <h5 class="card-title"><a href="{% url 'car_details' car.id %}" class="text-decoration-none text">{{car.name}}</a></h5>
+                <h3>Price: ${{ car.price }}</h3>
+                <p class="card-text">{{car.description|truncatechars:30}}</p>
             </div>
-          </div>
+        </div>
     </div>
     {% endfor %}
 </div>

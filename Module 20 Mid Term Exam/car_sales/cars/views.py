@@ -1,35 +1,47 @@
-from typing import Any
 from django.shortcuts import render, redirect
+from . import forms
+from . import models
+
 from django.views.generic import DetailView
-from .models import Car, Comments
-from .forms import CommentsForm
-from .models import Car, Purchase
 from django.contrib import messages
-
-class CarDetailView(DetailView):
-    model = Car
-    template_name = 'car_details.html'
-
-    def post(self, request, *args, **kwargs):
-        comments_form = CommentsForm(data=self.request.POST)
-        car = self.get_object()
-        if comments_form.is_valid():
-            new_comment = comments_form.save(commit=False)
-            new_comment.car = car
-            new_comment.save()
-            return redirect('car_details', pk=car.pk)
-        return self.get(self, request, *args, **kwargs)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        brand = self.object.brand
-        brand_cars_count = Car.objects.filter(brand=brand).count()
-        car = self.object
-        comments = car.comments.all()
-        comments_form = CommentsForm()
-
-        context['brand_cars_count'] = brand_cars_count
-        context['comments'] = comments
-        context['comments_form'] = comments_form
-        return context
+# Create your views here.
 
 
+def add_car(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    if request.method == 'POST':
+        form = forms.CarForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.instance.author = request.user
+            form.save()
+            return redirect('homepage')
+    else:
+        form = forms.CarForm()
+
+    return render(request, 'add_car.html', {'form': form, 'title': 'Add Car', 'button_text': 'Add Car', 'button_class': 'btn-success'})
+
+def car_detail(request, car_id):
+    car = models.Car.objects.get(id=car_id)
+
+    if request.method == 'POST':
+        if 'buy_now' in request.POST:
+            if car.quantity > 0:
+                car.buyers.add(request.user)
+                car.quantity -= 1
+                car.save()
+                messages.success(request, 'Car purchased successfully!')
+            else:
+                messages.error(request, 'Car is out of stock!')
+        elif 'comments' in request.POST:
+            comment_form = forms.CommentForm(request.POST)
+            if comment_form.is_valid():
+                new_comment = comment_form.save(commit=False)
+                new_comment.car = car
+                new_comment.save()
+    comments = models.Comments.objects.filter(car=car)
+
+    comment_form = forms.CommentForm()
+
+    return render(request, 'car_details.html', {'car': car, 'comments': comments, 'comment_form': comment_form})

@@ -5,7 +5,6 @@ from django.shortcuts import render, redirect,  get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
-from cars.models import Car, Purchase
 from django.contrib.auth.decorators import login_required
 def home(request):
     model = request.GET.get('model')
@@ -32,18 +31,5 @@ class ProfileView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['purchased_cars'] = Purchase.objects.filter(user=self.request.user)
+        context['purchased_cars'] = self.request.user.bought_cars.all()
         return context
-    
-@login_required
-def buy_now(request, pk):
-    car = get_object_or_404(Car, pk=pk)
-    if car.quantity > 0:
-        car.quantity -= 1
-        car.save()
-        # Add the car to the user's purchase list
-        Purchase.objects.create(user=request.user, car=car)
-        messages.add_message(request, messages.SUCCESS, 'Car purchased successfully!')
-    else:
-        messages.add_message(request, messages.WARNING, 'This car is out of stock.')
-    return redirect('car_details', pk=pk)

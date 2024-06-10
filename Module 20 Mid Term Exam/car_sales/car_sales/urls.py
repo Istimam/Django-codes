@@ -27,6 +27,5 @@ urlpatterns = [
     path('', include('cars.urls')),
     path('', include('authapp.urls')),
     path('profile/', views.ProfileView.as_view(), name= 'profile'),
-    path('buy_now/<int:pk>/', views.buy_now, name='buy_now'),
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

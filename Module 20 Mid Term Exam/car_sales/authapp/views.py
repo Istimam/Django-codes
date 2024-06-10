@@ -9,7 +9,6 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
-from cars.models import Car, Purchase
 from django.contrib.auth.decorators import login_required
 
 # Create your views here.

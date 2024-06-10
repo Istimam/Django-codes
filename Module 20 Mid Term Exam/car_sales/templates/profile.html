@@ -1,15 +1,21 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-<h1>Welcome {{ request.user.username }}</h1>
+<h1>Welcome {{ user.username }}</h1>
 <h2>Your Purchased Cars</h2>
 <div class="d-flex flex-wrap justify-content-center px-3 pt-5">
-    {% for purchase in purchased_cars %}
+    {% for car in user.bought_cars.all %}
     <div class="col-sm-3 m-2">
         <div class="card">
-            <img src="{{ purchase.car.image.url }}" class="card-img-top" alt="...">
+            {% if car.image %}
+                <img src="{{ car.image.url }}" class="card-img-top" alt="{{ car.name }}">
+            {% else %}
+                <img src="{% static 'byd-dolphin.jpg' %}" class="card-img-top" alt="Default image">
+            {% endif %}
             <div class="card-body">
-              <h5 class="card-title"><a href="{% url 'car_details' purchase.car.id %}" class="text-decoration-none text">{{ purchase.car.name }}</a></h5>
-              <p class="card-text">{{ purchase.car.description|truncatechars:30 }}</p>
+                <h5 class="card-title"><a href="{% url 'car_details' car.id %}" class="text-decoration-none text">{{car.name}}</a></h5>
+                <h3>Price: ${{ car.price }}</h3>
+                <p class="card-text">{{car.description|truncatechars:30}}</p>
             </div>
         </div>
     </div>
