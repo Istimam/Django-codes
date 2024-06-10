@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Welcome {{ request.user.username }}</h1>
+<h2>Your Purchased Cars</h2>
+<div class="d-flex flex-wrap justify-content-center px-3 pt-5">
+    {% for purchase in purchased_cars %}
+    <div class="col-sm-3 m-2">
+        <div class="card">
+            <img src="{{ purchase.car.image.url }}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title"><a href="{% url 'car_details' purchase.car.id %}" class="text-decoration-none text">{{ purchase.car.name }}</a></h5>
+              <p class="card-text">{{ purchase.car.description|truncatechars:30 }}</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
