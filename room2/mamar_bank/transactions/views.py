@@ -1,8 +1,8 @@
+from django.template.loader import render_to_string
 from django.shortcuts import get_object_or_404, redirect
-from django.db.models.query import QuerySet
+from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.db.models import Sum
 from django.urls import reverse_lazy
-from django.shortcuts import render
 from datetime import datetime
 from django.contrib import messages
 from django.http import HttpResponse
@@ -32,6 +32,15 @@ class TransactionCreateMixin(LoginRequiredMixin, CreateView):
         })
         return context
     
+def send_transaction_mail(user, amount, subject, template):
+    mail_subject = "Deposite Message"
+    message = render_to_string(template,{
+        'user': user,
+        'amount': amount,
+    })
+    send_mail = EmailMultiAlternatives(subject,'','nasrullah9867@gmail.com', to=[user.email])
+    send_mail.attach_alternative(message, "text/html")
+    send_mail.send()
 
 class DepositMoneyView(TransactionCreateMixin):
     form_class = DepositeForm
@@ -49,6 +58,9 @@ class DepositMoneyView(TransactionCreateMixin):
             update_fields=['balance']
         )
         messages.success(self.request, f"{amount}$ was deposited to you account")
+        # sending email to user when deposited
+        send_transaction_mail(self.request.user, amount, "Deposite Message", "transactions/deposite_message.html")
+
         return super().form_valid(form)
     
 class WithdrawMoneyView(TransactionCreateMixin):
@@ -67,6 +79,7 @@ class WithdrawMoneyView(TransactionCreateMixin):
             update_fields=['balance']
         )
         messages.success(self.request, f"Successfuly withdrawn {amount}$ from your account")
+        send_transaction_mail(self.request.user, amount, "Withdrawl Message", "transactions/withdrawl_message.html")
         return super().form_valid(form)
     
 class LoanRequestView(TransactionCreateMixin):
@@ -83,6 +96,7 @@ class LoanRequestView(TransactionCreateMixin):
         if current_loan_count >= 3:
             return HttpResponse("Loan request crossed limits")
         messages.success(self.request, f"Successfuly loan request sent about only {amount}$")
+        send_transaction_mail(self.request.user, amount, "Loan Request Message", "transactions/loan_request_message.html")
         return super().form_valid(form)
     
 class TransactionReportView(LoginRequiredMixin, ListView):
@@ -126,6 +140,9 @@ class PayLoanView(LoginRequiredMixin, View):
                 user_account.save()
                 loan.transaction_type = LOAN_PAID
                 loan.save()
+
+                send_transaction_mail(self.request.user, loan.amount, "Loan Payment Message", "transactions/loan_pay_message.html")
+
                 return redirect('loan_list')
             else:
                 messages.error(request, "Insufficient balance for loan payment")
